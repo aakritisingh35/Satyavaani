@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SatyaVaani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12c0-2 1-3 2-3s2 3 2 6 1 6 2 6 2-4 2-9 1-9 2-9 2 6 2 12 1 6 2 6 2-1 2-3" stroke="#7FA3C4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>SatyaVaani</h1>
+        <p>Live voice-authenticity monitor · SIH26104</p>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-view="live">Live monitor</button>
+      <button class="tab" data-view="eval">Evaluation mode</button>
+    </div>
+  </header>
+
+  <!-- LIVE MONITOR VIEW -->
+  <div class="view active" id="view-live">
+    <div class="grid">
+      <div class="panel">
+        <p class="panel-title">Call session — authenticity score</p>
+
+        <div class="readout-row">
+          <div class="readout" id="scoreReadout">0<small>% synthetic</small></div>
+          <div class="status-pill safe" id="statusPill">Genuine speech</div>
+        </div>
+
+        <canvas id="chart" width="640" height="190"></canvas>
+        <div class="thresholds">
+          <span><span class="dot" style="background:var(--warn)"></span> Heads up · 40%</span>
+          <span><span class="dot" style="background:var(--danger)"></span> Strong warning · 75%</span>
+        </div>
+
+        <div class="alert-box" id="alertBox">
+          <span class="action-label">Recommended action</span>
+          No action needed — voice pattern is consistent with genuine human speech.
+        </div>
+
+        <div class="controls">
+          <button class="ctl primary" id="playBtn">Play sample call ▷</button>
+          <button class="ctl" id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Session log</p>
+        <div class="log" id="log">
+          <div class="log-entry system"><span class="log-time">00:00</span>Waiting for call audio…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVALUATION VIEW -->
+  <div class="view" id="view-eval">
+    <div class="eval-summary">
+      <div class="eval-card">
+        <h3>In-distribution engines (seen in training)</h3>
+        <div class="eval-big">96.8%<small style="font-size:14px;color:var(--muted);"> accuracy</small></div>
+        <p class="eval-note">EER 3.1% · averaged across Engines A, B, C</p>
+      </div>
+      <div class="eval-card">
+        <h3>Held-out engines (never seen in training)</h3>
+        <div class="eval-big dim">88.4%<small style="font-size:14px;color:var(--muted);"> accuracy</small></div>
+        <p class="eval-note">EER 9.7% · averaged across Engines D, E</p>
+      </div>
+    </div>
+
+    <div class="bars">
+      <p class="panel-title">Per-engine accuracy</p>
+      <div class="bar-row">
+        <div class="bar-label"><span class="tag seen">SEEN</span> Engine A</div>
+        <div class="bar-track"><div class="bar-fill" style="width:97%;background:var(--info)"></div></div>
+        <div class="mono">97%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="tag seen">SEEN</span> Engine B</div>
+        <div class="bar-track"><div class="bar-fill" style="width:96%;background:var(--info)"></div></div>
+        <div class="mono">96%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="tag seen">SEEN</span> Engine C</div>
+        <div class="bar-track"><div class="bar-fill" style="width:98%;background:var(--info)"></div></div>
+        <div class="mono">98%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="tag unseen">UNSEEN</span> Engine D</div>
+        <div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--danger)"></div></div>
+        <div class="mono">91%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span class="tag unseen">UNSEEN</span> Engine E</div>
+        <div class="bar-track"><div class="bar-fill" style="width:86%;background:var(--danger)"></div></div>
+        <div class="mono">86%</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title">Held-out engine detail</p>
+      <table>
+        <thead><tr><th>Engine</th><th>Split</th><th>Accuracy</th><th>EER</th><th>Technique family</th></tr></thead>
+        <tbody>
+          <tr><td>Engine A</td><td>Train/val</td><td class="mono">97.2%</td><td class="mono">2.6%</td><td>Concatenative TTS</td></tr>
+          <tr><td>Engine B</td><td>Train/val</td><td class="mono">96.1%</td><td class="mono">3.4%</td><td>Neural TTS</td></tr>
+          <tr><td>Engine C</td><td>Train/val</td><td class="mono">97.9%</td><td class="mono">3.2%</td><td>Voice conversion</td></tr>
+          <tr><td>Engine D</td><td>Held-out</td><td class="mono">90.5%</td><td class="mono">8.3%</td><td>Diffusion-based</td></tr>
+          <tr><td>Engine E</td><td>Held-out</td><td class="mono">86.3%</td><td class="mono">11.1%</td><td>Open-source RVC</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
